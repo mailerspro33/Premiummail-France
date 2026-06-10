@@ -6,74 +6,76 @@
 <title>E-mail Finder Pro — Outil de Prospection B2B</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; background: #f8fafc; color: #334155; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
 
   /* ─── ECRAN DE CONNEXION ────────────────────────────────────────────────── */
-  #loginScreen { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); width: 100%; max-width: 420px; border: 1px solid #e2e8f0; text-align: center; }
-  .login-logo { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: #eff6ff; border-radius: 50%; color: #2563eb; margin-bottom: 24px; }
-  #loginScreen h2 { font-size: 1.5rem; color: #1e293b; margin-bottom: 8px; font-weight: 700; }
-  #loginScreen p { font-size: 0.875rem; color: #64748b; margin-bottom: 24px; }
+  #loginScreen { background: #1e293b; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); width: 100%; max-width: 420px; border: 1px solid #334155; text-align: center; }
+  .login-logo { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: #1e3a5f; border-radius: 50%; color: #38bdf8; margin-bottom: 24px; }
+  #loginScreen h2 { font-size: 1.5rem; color: #f8fafc; margin-bottom: 8px; font-weight: 700; }
+  #loginScreen p { font-size: 0.875rem; color: #94a3b8; margin-bottom: 24px; }
   .input-group { margin-bottom: 16px; text-align: left; }
-  .input-group label { display: block; font-size: 0.75rem; font-weight: 600; color: #475569; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; }
-  .input-field { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background: #f8fafc; color: #1e293b; transition: all 0.2s; }
-  .input-field:focus { outline: none; border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-  .btn-login { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
-  .btn-login:hover { background: #1d4ed8; }
-  #loginError { color: #dc2626; font-size: 0.85rem; margin-top: 12px; display: none; font-weight: 500; }
+  .input-group label { display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; }
+  .input-field { width: 100%; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; font-size: 0.95rem; background: #0f172a; color: #e2e8f0; transition: all 0.2s; }
+  .input-field:focus { outline: none; border-color: #38bdf8; background: #0f172a; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15); }
+  .btn-login { width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+  .btn-login:hover { background: #0ea5e9; }
+  #loginError { color: #f87171; font-size: 0.85rem; margin-top: 12px; display: none; font-weight: 500; }
 
   /* ─── INTERFACE PRINCIPALE ─────────────────────────────────────────────── */
   #appContainer { width: 100%; max-width: 1100px; display: none; animation: fadeIn 0.4s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  header { background: white; padding: 20px 24px; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  header { background: #1e293b; padding: 20px 24px; border-radius: 14px; border: 1px solid #334155; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
   .brand { display: flex; align-items: center; gap: 12px; }
-  .brand-logo { color: #2563eb; width: 32px; height: 32px; }
-  .brand h1 { font-size: 1.25rem; font-weight: 700; color: #1e293b; }
+  .brand-logo { color: #38bdf8; width: 32px; height: 32px; }
+  .brand h1 { font-size: 1.25rem; font-weight: 700; color: #f8fafc; }
   
   .user-controls { display: flex; align-items: center; gap: 12px; }
-  .user-badge { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; color: #475569; font-weight: 500; }
-  .btn-logout { background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .user-badge { display: flex; align-items: center; gap: 8px; background: #0f172a; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; color: #94a3b8; font-weight: 500; border: 1px solid #334155; }
+  .btn-logout { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-logout:hover { background: #991b1b; }
 
   .layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
   @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
-  .panel { background: white; border-radius: 14px; border: 1px solid #e2e8f0; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); height: fit-content; }
-  .panel-title { font-size: 0.9rem; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
+  .panel { background: #1e293b; border-radius: 14px; border: 1px solid #334155; padding: 20px; height: fit-content; }
+  .panel-title { font-size: 0.9rem; font-weight: 700; color: #f8fafc; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
 
   .form-grid { display: flex; flex-direction: column; gap: 14px; }
   .field { display: flex; flex-direction: column; gap: 6px; }
-  label { font-size: 0.75rem; font-weight: 600; color: #64748b; }
-  select { background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 8px; padding: 9px 12px; font-size: 0.9rem; width: 100%; }
+  label { font-size: 0.75rem; font-weight: 600; color: #94a3b8; }
+  select { background: #0f172a; border: 1px solid #334155; color: #e2e8f0; border-radius: 8px; padding: 9px 12px; font-size: 0.9rem; width: 100%; }
 
   /* Radar / Pulse Animation */
-  .radar-container { display: flex; align-items: center; gap: 10px; margin-top: 5px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; }
-  .radar-pulse { width: 14px; height: 14px; background: #cbd5e1; border-radius: 50%; position: relative; }
+  .radar-container { display: flex; align-items: center; gap: 10px; margin-top: 5px; background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; }
+  .radar-pulse { width: 14px; height: 14px; background: #475569; border-radius: 50%; position: relative; }
   .radar-pulse.active { background: #22c55e; }
   .radar-pulse.active::after { content: ''; position: absolute; width: 100%; height: 100%; background: #22c55e; border-radius: 50%; animation: pulse 1.5s infinite ease-out; opacity: 0.6; }
-  .radar-pulse.pause { background: #f97316; } /* Orange pour la pause */
+  .radar-pulse.pause { background: #f97316; }
   @keyframes pulse { to { transform: scale(3); opacity: 0; } }
-  .radar-text { font-size: 0.8rem; font-weight: 500; color: #64748b; line-height: 1.3; }
+  .radar-text { font-size: 0.8rem; font-weight: 500; color: #94a3b8; line-height: 1.3; }
 
   /* Alerte de restriction de sécurité */
-  .cooldown-alert { background: #fff7ed; border: 1px solid #ffedd5; color: #c2410c; padding: 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; display: none; line-height: 1.4; }
+  .cooldown-alert { background: #3a2212; border: 1px solid #ea580c; color: #ffedd5; padding: 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; display: none; line-height: 1.4; }
 
   /* Boutons */
   .btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
   .btn { width: 100%; padding: 11px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
-  .btn-stream { background: #2563eb; color: white; }
-  .btn-stream:hover { background: #1d4ed8; }
+  .btn-stream { background: #38bdf8; color: #0f172a; }
+  .btn-stream:hover { background: #0ea5e9; }
   .btn-stop { background: #ef4444; color: white; display: none; }
-  .btn-panel-clear { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+  .btn-panel-clear { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+  .btn-panel-clear:hover { background: #334155; }
 
   /* Stats */
   .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
   @media (max-width: 550px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-  .stat-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; }
-  .stat-num { font-size: 1.35rem; font-weight: 700; color: #1e293b; font-variant-numeric: tabular-nums; }
+  .stat-card { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 12px 14px; }
+  .stat-num { font-size: 1.35rem; font-weight: 700; color: #38bdf8; font-variant-numeric: tabular-nums; }
   .stat-label { font-size: 0.72rem; color: #64748b; margin-top: 2px; font-weight: 500; }
 
   /* Terminal de Sortie */
-  .output-container { display: flex; flex-direction: column; background: #0f172a; border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+  .output-container { display: flex; flex-direction: column; background: #0f172a; border-radius: 12px; overflow: hidden; border: 1px solid #334155; }
   .output-header { background: #1e293b; padding: 10px 16px; font-size: 0.75rem; color: #94a3b8; font-family: monospace; display: flex; justify-content: space-between; border-bottom: 1px solid #334155; }
   .output-body { height: 420px; overflow-y: auto; padding: 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.6; color: #e2e8f0; scroll-behavior: smooth; }
   
@@ -82,15 +84,17 @@
   .table-row.header-row { position: sticky; top: -14px; background: #0f172a; z-index: 10; color: #64748b; font-weight: bold; border-bottom: 2px solid #334155; padding-bottom: 8px; font-size: 0.75rem; text-transform: uppercase; }
   .col-idx { color: #475569; font-size: 0.75rem; }
   .col-tag { font-size: 0.7rem; background: #1e293b; padding: 2px 6px; border-radius: 4px; color: #94a3b8; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid #334155;}
-  .col-email { color: #38bdf8; font-weight: 500; word-break: break-all; }
+  .col-email { color: #a3e635; font-weight: 500; word-break: break-all; }
   .col-status { color: #22c55e; text-align: right; font-size: 0.75rem; }
 
   .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-  .btn-action { background: white; border: 1px solid #cbd5e1; color: #475569; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .btn-action { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  .btn-action:hover { background: #334155; }
 </style>
 </head>
 <body>
 
+<!-- ─── ECRAN DE CONNEXION ────────────────────────────────────────────────── -->
 <div id="loginScreen">
   <div class="login-logo">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:32px;height:32px;"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
@@ -103,6 +107,7 @@
   <div id="loginError">Identifiants incorrects. Accès refusé.</div>
 </div>
 
+<!-- ─── INTERFACE PRINCIPALE DE L'APPLICATION ─────────────────────────────── -->
 <div id="appContainer">
   <header>
     <div class="brand">
@@ -152,11 +157,11 @@
 
         <div class="cooldown-alert" id="cooldownAlert">
           ⚠️ <strong>Limite de sécurité atteinte (1500 Leads)</strong>.<br>
-          Pour éviter le blocage de votre IP par Google Maps, le système est suspendu. Reprise automatique dans : <span id="countdownTimer" style="font-weight: 700;">01:30:00</span>
+          Pour éviter le blocage de votre IP, le système est suspendu. Reprise automatique dans : <span id="countdownTimer" style="font-weight: 700;">01:30:00</span>
         </div>
 
         <div class="btn-group">
-          <button class="btn btn-stream" id="btnStream" onclick="startStream()">Lancer la synchronisation API</button>
+          <button class="btn btn-stream" id="btnStream" onclick="startStream()">Lancer la capture réelle</button>
           <button class="btn btn-stop" id="btnStop" onclick="stopStream()">Interrompre la capture</button>
           <button class="btn btn-panel-clear" id="btnClear" onclick="clearAll()">Effacer la liste</button>
         </div>
@@ -191,6 +196,18 @@
 </div>
 
 <script>
+// ─── CONFIGURATION DE L'URL LWS MODIFIÉE ───────────────────────────────────
+const LWS_API_URL = "https://www.bureldouarnenez.fr/scrape.php"; 
+
+let dataLeads = []; 
+let uniqueEmails = new Set();
+let streamInterval = null;
+let textRotationInterval = null;
+let cooldownInterval = null;
+let currentIdx = 0;
+let isCooldownActive = false;
+let cooldownSecondsLeft = 5400; 
+
 function checkAuth() {
   if (document.getElementById('username').value.trim() === "Kazama1134" && document.getElementById('password').value.trim() === "Trillions2605") {
     document.getElementById('loginScreen').style.display = 'none';
@@ -204,61 +221,13 @@ function checkAuth() {
 function triggerLogout() { stopStream(); document.getElementById('appContainer').style.display = 'none'; document.getElementById('loginScreen').style.display = 'block'; }
 function updateConsoleHeader() { document.getElementById('consoleTitle').textContent = `CONSOLE D'ENRICHISSEMENT : ${document.getElementById('directorySource').value.toUpperCase()}`; }
 
-const prenoms = ["thomas","nicolas","alexandre","julien","maxime","pierre","lucas","romain","florian","hugo","arthur","paul","camille","lea","manon","chloe","emma"];
-const noms = ["martin","bernard","thomas","petit","robert","richard","durand","dubois","moreau","simon","laurent","lefebvre","michel","roux","vincent","dupont"];
-const depts = ["75","92","93","94","69","13","33"];
-const annees = ["1985","1988","1990","1992","1995","94","82"];
-const massProviders = ["gmail.com", "orange.fr", "wanadoo.fr", "sfr.fr", "yahoo.fr", "outlook.fr"];
-
-const companiesBySector = {
-  btp: ["bouygues-batiment", "vinci-construction", "eiffage-infra", "spie-batignolles"],
-  sante: ["sanofi-pharma", "biomerieux-lab", "servier-sante", "pierre-fabre-pro"],
-  immo: ["nexity-pro", "foncia-immo", "century21-paris", "orpi-france"],
-  tech: ["orange-business", "capgemini-consult", "ovhcloud-pro", "atos-digital"]
-};
-
-let dataLeads = []; 
-let uniqueEmails = new Set();
-let streamInterval = null;
-let textRotationInterval = null;
-let cooldownInterval = null;
-let currentIdx = 0;
-let isCooldownActive = false;
-let cooldownSecondsLeft = 5400; // 1h30m = 5400 secondes
-
-function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-function generateSingleLead() {
-  const p = rand(prenoms); const n = rand(noms);
-  const sect = document.getElementById('targetSector').value;
-  let domain = (Math.random() > 0.4) ? `${rand(companiesBySector[sect])}.fr` : rand(massProviders);
-  
-  // Algorithme de mix automatique complexes (noms, chiffres, départements)
-  let local = `${p}.${n}`;
-  const r = Math.random();
-  if (r < 0.3) local = `${p}.${n}${rand(depts)}`;
-  else if (r < 0.6) local = `${p[0]}.${n}${rand(annees)}`;
-  else if (r < 0.8) local = `contact.${n}`;
-
-  const sectorLabel = document.getElementById('targetSector').options[document.getElementById('targetSector').selectedIndex].text.split(' ')[0];
-  const regionLabel = document.getElementById('targetRegion').options[document.getElementById('targetRegion').selectedIndex].text.split(' ')[0];
-
-  return {
-    email: `${local}@${domain}`.toLowerCase(),
-    sector: sectorLabel,
-    region: regionLabel,
-    time: new Date().toLocaleTimeString('fr-FR')
-  };
-}
-
-// Fonction qui génère une fausse URL d'annuaire visitée à la volée
 function getLiveFakedURL() {
   const src = document.getElementById('directorySource').value;
   const sector = document.getElementById('targetSector').value;
   const city = document.getElementById('targetRegion').value;
   const randomId = Math.floor(100000 + Math.random() * 900000);
 
-  if (src === 'googlemaps') return `google.com/maps/place/${sector}+${city}/data=!3m1!pro-fiche_id${randomId}`;
+  if (src === 'googlemaps') return `google.com/maps/place/${sector}+${city}/data=!3m1!pro-id${randomId}`;
   if (src === 'pagesjaunes') return `pagesjaunes.fr/pros/structure-${sector}-${city}-${randomId}.html`;
   return `infogreffe.fr/entreprises/fiche-siret-${randomId}00012`;
 }
@@ -283,37 +252,56 @@ function startStream() {
   if (streamInterval || isCooldownActive) return;
 
   const currentDir = document.getElementById('directorySource').value.toUpperCase();
+  const selectedSector = document.getElementById('targetSector').value; // Récupère le secteur choisi
+
   document.getElementById('radarPulse').className = "radar-pulse active";
-  document.getElementById('consoleMeta').textContent = `STATUS: CONNECTED TO ${currentDir}`;
+  document.getElementById('consoleMeta').textContent = `STATUS: CONNECTED TO LWS`;
   document.getElementById('btnStream').style.display = 'none';
   document.getElementById('btnStop').style.display = 'block';
-  document.getElementById('rateDisplay').textContent = "1500 / H";
-  document.getElementById('timeDisplay').textContent = "Premium";
+  document.getElementById('rateDisplay').textContent = "FETCHING";
+  document.getElementById('timeDisplay').textContent = "En ligne";
 
-  // Simulation dynamique de la visite automatique des pages en arrière-plan
   textRotationInterval = setInterval(() => {
     document.getElementById('radarStatus').innerHTML = `🔍 Visite en cours : <span style="color:#38bdf8; font-family:monospace; font-size:0.75rem;">${getLiveFakedURL()}</span>`;
   }, 900);
 
-  // Cadence de 1500 mails / heure (1 toutes les 2400 ms)
+  // Requête asynchrone cyclique vers votre script PHP LWS
   streamInterval = setInterval(() => {
-    // CONDITION DE BLOCAGE STRICTE À 1500 LEADS
     if (dataLeads.length >= 1500) {
       triggerCooldown();
       return;
     }
 
-    let lead = generateSingleLead();
-    while (uniqueEmails.has(lead.email)) { lead = generateSingleLead(); }
-    
-    currentIdx++;
-    uniqueEmails.add(lead.email);
-    dataLeads.push({idx: currentIdx, ...lead});
+    // Ajout du paramètre sector dans la requête dynamique
+    fetch(`${LWS_API_URL}?sector=${selectedSector}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success" && data.emails.length > 0) {
+          const sectorLabel = document.getElementById('targetSector').options[document.getElementById('targetSector').selectedIndex].text.split(' ')[0];
+          const regionLabel = document.getElementById('targetRegion').options[document.getElementById('targetRegion').selectedIndex].text.split(' ')[0];
 
-    renderTable();
-    document.getElementById('totalCount').textContent = dataLeads.length.toLocaleString('fr-FR');
-    document.getElementById('uniCount').textContent = uniqueEmails.size.toLocaleString('fr-FR');
-  }, 2400); 
+          data.emails.forEach(vraiEmail => {
+            if (!uniqueEmails.has(vraiEmail) && dataLeads.length < 1500) {
+              currentIdx++;
+              uniqueEmails.add(vraiEmail);
+              dataLeads.push({
+                idx: currentIdx,
+                email: vraiEmail,
+                sector: sectorLabel,
+                region: regionLabel
+              });
+            }
+          });
+          renderTable();
+          document.getElementById('totalCount').textContent = dataLeads.length.toLocaleString('fr-FR');
+          document.getElementById('uniCount').textContent = uniqueEmails.size.toLocaleString('fr-FR');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('radarStatus').textContent = "⚠️ Erreur : L'API LWS ne répond pas.";
+      });
+  }, 3000); 
 }
 
 function stopStream() {
@@ -330,53 +318,44 @@ function stopStream() {
   document.getElementById('btnStop').style.display = 'none';
 }
 
-// DECLENCHEMENT DU COMPTE A REBOURS DE 1h30 (SÉCURITÉ ANTI-BOT)
 function triggerCooldown() {
   stopStream();
   isCooldownActive = true;
-  
-  // Changement d'état visuel de l'interface
   document.getElementById('radarPulse').className = "radar-pulse pause";
   document.getElementById('radarStatus').innerHTML = "<span style='color:#f97316;'>🔒 Limite système atteinte (1500 / 1h30). Temporisation active.</span>";
-  document.getElementById('consoleMeta').textContent = "STATUS: COOLDOWN RESTRICTION";
+  document.getElementById('consoleMeta').textContent = "STATUS: COOLDOWN";
   document.getElementById('rateDisplay').textContent = "PAUSE";
   document.getElementById('btnStream').disabled = true;
   document.getElementById('btnStream').style.opacity = "0.4";
   document.getElementById('cooldownAlert').style.display = "block";
 
-  cooldownSecondsLeft = 5400; // Reset à 1h30
+  cooldownSecondsLeft = 5400;
 
   cooldownInterval = setInterval(() => {
     cooldownSecondsLeft--;
-    
     if (cooldownSecondsLeft <= 0) {
-      // Fin de la pause obligée
       clearInterval(cooldownInterval);
       isCooldownActive = false;
       document.getElementById('cooldownAlert').style.display = "none";
       document.getElementById('btnStream').disabled = false;
       document.getElementById('btnStream').style.opacity = "1";
-      document.getElementById('radarStatus').textContent = "Pause terminée. Prêt à reprendre.";
+      document.getElementById('radarStatus').textContent = "Pause terminée. Prêt.";
       return;
     }
-
-    // Calcul du format d'affichage HH:MM:SS
     let hrs = Math.floor(cooldownSecondsLeft / 3600);
     let mins = Math.floor((cooldownSecondsLeft % 3600) / 60);
     let secs = cooldownSecondsLeft % 60;
-    
-    document.getElementById('countdownTimer').textContent = 
-      `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    document.getElementById('countdownTimer').textContent = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }, 1000);
 }
 
 function copyAll() { if (!dataLeads.length) return; navigator.clipboard.writeText(dataLeads.map(l => l.email).join('\n')).then(() => alert("Liste copiée !")); }
-function downloadTxt() { if (!dataLeads.length) return; triggerDl(new Blob([dataLeads.map(l => l.email).join('\n')], { type: 'text/plain' }), 'leads_premium.txt'); }
+function downloadTxt() { if (!dataLeads.length) return; triggerDl(new Blob([dataLeads.map(l => l.email).join('\n')], { type: 'text/plain' }), 'leads.txt'); }
 function downloadCSV() {
   if (!dataLeads.length) return;
-  let csv = "\uFEFFIndex;Email;Secteur;Region;Heure\n";
-  dataLeads.forEach(l => csv += `${l.idx};${l.email};${l.sector};${l.region};${l.time}\n`);
-  triggerDl(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), 'export_leads_premium.csv');
+  let csv = "\uFEFFIndex;Email;Secteur;Region\n";
+  dataLeads.forEach(l => csv += `${l.idx};${l.email};${l.sector};${l.region}\n`);
+  triggerDl(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), 'export_leads.csv');
 }
 function triggerDl(b, n) { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = n; a.click(); }
 
@@ -393,7 +372,6 @@ function clearAll() {
   document.getElementById('cooldownAlert').style.display = "none";
   document.getElementById('btnStream').disabled = false;
   document.getElementById('btnStream').style.opacity = "1";
-  document.getElementById('radarStatus').textContent = "Analyseur réinitialisé.";
 }
 </script>
 </body>
