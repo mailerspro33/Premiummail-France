@@ -3,511 +3,479 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Générateur d'Emails — Test Entreprise</title>
+<title>E-mail Finder Pro — Outil de Prospection B2B</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 20px; }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; background: #f8fafc; color: #334155; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
 
-  h1 { font-size: 1.3rem; font-weight: 700; color: #38bdf8; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  /* ─── ECRAN DE CONNEXION ────────────────────────────────────────────────── */
+  #loginScreen { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); width: 100%; max-width: 420px; border: 1px solid #e2e8f0; text-align: center; }
+  .login-logo { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: #eff6ff; border-radius: 50%; color: #2563eb; margin-bottom: 24px; }
+  #loginScreen h2 { font-size: 1.5rem; color: #1e293b; margin-bottom: 8px; font-weight: 700; }
+  #loginScreen p { font-size: 0.875rem; color: #64748b; margin-bottom: 24px; }
+  .input-group { margin-bottom: 16px; text-align: left; }
+  .input-group label { display: block; font-size: 0.75rem; font-weight: 600; color: #475569; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; }
+  .input-field { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background: #f8fafc; color: #1e293b; transition: all 0.2s; }
+  .input-field:focus { outline: none; border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+  .btn-login { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+  .btn-login:hover { background: #1d4ed8; }
+  #loginError { color: #dc2626; font-size: 0.85rem; margin-top: 12px; display: none; font-weight: 500; }
 
-  .controls {
-    background: #1e293b;
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    align-items: flex-end;
-  }
+  /* ─── INTERFACE PRINCIPALE ─────────────────────────────────────────────── */
+  #appContainer { width: 100%; max-width: 1100px; display: none; animation: fadeIn 0.4s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .field { display: flex; flex-direction: column; gap: 5px; }
-  label { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+  header { background: white; padding: 20px 24px; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { color: #2563eb; width: 32px; height: 32px; }
+  .brand h1 { font-size: 1.25rem; font-weight: 700; color: #1e293b; }
+  .user-badge { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; color: #475569; font-weight: 500; }
 
-  input[type="number"], select {
-    background: #0f172a;
-    border: 1px solid #334155;
-    color: #e2e8f0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.88rem;
-    width: 150px;
-  }
+  .layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
-  .extensions-box {
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 8px 12px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    max-width: 400px;
-    min-width: 200px;
-  }
+  .panel { background: white; border-radius: 14px; border: 1px solid #e2e8f0; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); height: fit-content; }
+  .panel-title { font-size: 0.9rem; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
 
-  .ext-tag {
-    background: #1e3a5f;
-    border: 1px solid #38bdf8;
-    color: #38bdf8;
-    border-radius: 20px;
-    padding: 2px 10px;
-    font-size: 0.78rem;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.15s;
-  }
-  .ext-tag.off { background: #1e293b; border-color: #334155; color: #475569; }
+  .form-grid { display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  label { font-size: 0.75rem; font-weight: 600; color: #64748b; }
+  select, input[type="number"], input[type="text"] { background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 8px; padding: 9px 12px; font-size: 0.9rem; width: 100%; transition: border 0.15s; }
+  select:focus, input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.05); }
 
-  .btn {
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.88rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .btn-gen   { background: #38bdf8; color: #0f172a; }
-  .btn-gen:hover { background: #0ea5e9; }
-  .btn-stream { background: #22c55e; color: #0f172a; }
-  .btn-stream:hover { background: #16a34a; }
-  .btn-stop  { background: #ef4444; color: white; }
+  /* Radar / Pulse Animation */
+  .radar-container { display: flex; align-items: center; gap: 10px; margin-top: 5px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; }
+  .radar-pulse { width: 14px; height: 14px; background: #cbd5e1; border-radius: 50%; position: relative; }
+  .radar-pulse.active { background: #22c55e; }
+  .radar-pulse.active::after { content: ''; position: absolute; width: 100%; height: 100%; background: #22c55e; border-radius: 50%; animation: pulse 1.5s infinite ease-out; opacity: 0.6; }
+  @keyframes pulse { to { transform: scale(3); opacity: 0; } }
+  .radar-text { font-size: 0.8rem; font-weight: 500; color: #64748b; }
+
+  /* Boutons */
+  .btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .btn { width: 100%; padding: 11px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
+  .btn-gen { background: #2563eb; color: white; }
+  .btn-gen:hover { background: #1d4ed8; }
+  .btn-stream { background: #10b981; color: white; }
+  .btn-stream:hover { background: #059669; }
+  .btn-stop { background: #ef4444; color: white; display: none; }
   .btn-stop:hover { background: #dc2626; }
-  .btn-copy  { background: #334155; color: #e2e8f0; }
-  .btn-copy:hover { background: #475569; }
-  .btn-clear { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
 
-  .stats {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-  .stat {
-    background: #1e293b;
-    border-radius: 10px;
-    padding: 10px 18px;
-    text-align: center;
-    min-width: 90px;
-  }
-  .stat-num { font-size: 1.5rem; font-weight: 700; color: #38bdf8; font-variant-numeric: tabular-nums; }
-  .stat-label { font-size: 0.68rem; color: #64748b; margin-top: 2px; }
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 550px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; text-align: left; }
+  .stat-num { font-size: 1.35rem; font-weight: 700; color: #1e293b; font-variant-numeric: tabular-nums; }
+  .stat-label { font-size: 0.72rem; color: #64748b; margin-top: 2px; font-weight: 500; }
 
-  .progress-bar-wrap {
-    background: #1e293b;
-    border-radius: 6px;
-    height: 6px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    display: none;
-  }
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #38bdf8, #22c55e);
-    border-radius: 6px;
-    transition: width 0.1s;
-    width: 0%;
-  }
+  /* Terminal de Sortie */
+  .output-container { display: flex; flex-direction: column; background: #0f172a; border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+  .output-header { background: #1e293b; padding: 10px 16px; font-size: 0.75rem; color: #94a3b8; font-family: monospace; display: flex; justify-content: space-between; border-bottom: 1px solid #334155; }
+  .output-body { height: 420px; overflow-y: auto; padding: 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.6; color: #e2e8f0; scroll-behavior: smooth; }
+  
+  .table-wrapper { display: flex; flex-direction: column; width: 100%; }
+  .table-row { display: grid; grid-template-columns: 60px 100px 100px 1fr 70px; gap: 12px; border-bottom: 1px solid #1e293b; padding: 6px 0; align-items: center; }
+  .table-row.header-row { position: sticky; top: -14px; background: #0f172a; z-index: 10; color: #64748b; font-weight: bold; border-bottom: 2px solid #334155; padding-bottom: 8px; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px; }
+  .col-idx { color: #475569; font-size: 0.75rem; }
+  .col-tag { font-size: 0.7rem; background: #1e293b; padding: 2px 6px; border-radius: 4px; color: #94a3b8; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid #334155;}
+  .col-email { color: #38bdf8; font-weight: 500; word-break: break-all; }
+  .col-status { color: #22c55e; text-align: right; font-size: 0.75rem; }
+  .view-hint { text-align: center; color: #64748b; font-size: 0.75rem; padding: 10px 0; font-style: italic; border-top: 1px dashed #1e293b; margin-top: 5px;}
 
-  .output {
-    background: #1e293b;
-    border-radius: 12px;
-    padding: 14px;
-    height: 360px;
-    overflow-y: auto;
-    font-family: 'Courier New', monospace;
-    font-size: 0.8rem;
-    line-height: 1.75;
-    border: 1px solid #334155;
-  }
-  .email-line { color: #a3e635; }
-  .email-line span { color: #475569; margin-right: 8px; font-size: 0.68rem; }
+  .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .btn-action { background: white; border: 1px solid #cbd5e1; color: #475569; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+  .btn-action:hover { background: #f8fafc; color: #1e293b; border-color: #94a3b8; }
+  .btn-clear { margin-left: auto; color: #64748b; }
+  .btn-clear:hover { color: #ef4444; border-color: #fca5a5; background: #fff5f5; }
 
-  .actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-
-  .custom-ext {
-    background: #0f172a;
-    border: 1px solid #334155;
-    color: #e2e8f0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.88rem;
-    width: 110px;
-  }
-  .add-ext-btn {
-    background: #334155;
-    color: #e2e8f0;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 0.85rem;
-  }
-
-  .badge {
-    font-size: 0.65rem;
-    background: #0ea5e9;
-    color: #0f172a;
-    border-radius: 4px;
-    padding: 1px 6px;
-    margin-left: 6px;
-    vertical-align: middle;
-    font-weight: 700;
-  }
-
-  .hint { font-size: 0.72rem; color: #64748b; margin-top: 4px; }
+  /* Progress Bar */
+  .progress-wrap { background: #e2e8f0; height: 6px; width: 100%; border-radius: 3px; margin-top: 14px; overflow: hidden; display: none; }
+  .progress-bar { height: 100%; background: #2563eb; width: 0%; transition: width 0.1s; }
 </style>
 </head>
 <body>
 
-<h1>⚡ Générateur d'Emails <span class="badge">HAUTE PERF</span></h1>
-
-<div class="controls">
-
-  <div class="field">
-    <label>Quantité cible</label>
-    <select id="targetCount">
-      <option value="1000">1 000</option>
-      <option value="5000" selected>5 000</option>
-      <option value="10000">10 000</option>
-      <option value="25000">25 000</option>
-      <option value="50000">50 000</option>
-      <option value="100000">100 000</option>
-      <option value="custom">Personnalisé</option>
-    </select>
+<div id="loginScreen">
+  <div class="login-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:32px;height:32px;">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+    </svg>
   </div>
-
-  <div class="field" id="customField" style="display:none">
-    <label>Quantité exacte</label>
-    <input type="number" id="customCount" value="5000" min="100" max="500000" step="100">
+  <h2>E-mail Finder Pro</h2>
+  <p>Authentification requise pour accéder au réseau</p>
+  
+  <div class="input-group">
+    <label>Identifiant</label>
+    <input type="text" id="username" class="input-field" placeholder="Ex: Kazama1134" autocomplete="off">
   </div>
-
-  <div class="field">
-    <label>Format du nom</label>
-    <select id="format">
-      <option value="random">Aléatoire (mixte)</option>
-      <option value="prenom.nom">prenom.nom</option>
-      <option value="prenomnom">prenomnom</option>
-      <option value="p.nom">p.nom</option>
-      <option value="nom.prenom">nom.prenom</option>
-      <option value="prenom_nom">prenom_nom</option>
-      <option value="prenom">prenom seul</option>
-    </select>
+  <div class="input-group">
+    <label>Mot de passe</label>
+    <input type="password" id="password" class="input-field" placeholder="••••••••" autocomplete="off">
   </div>
+  
+  <button class="btn-login" onclick="checkAuth()">Se connecter</button>
+  <div id="loginError">Identifiants incorrects. Accès refusé.</div>
+</div>
 
-  <div class="field">
-    <label>Extensions actives</label>
-    <div class="extensions-box" id="extBox"></div>
-  </div>
+<div id="appContainer">
+  <header>
+    <div class="brand">
+      <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.603 10.601Z" />
+      </svg>
+      <h1>E-mail Finder Pro</h1>
+    </div>
+    <div class="user-badge">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+      </svg>
+      <span id="connectedUser">Kazama1134</span>
+    </div>
+  </header>
 
-  <div class="field">
-    <label>+ Extension</label>
-    <div style="display:flex;gap:6px;">
-      <input class="custom-ext" type="text" id="customExt" placeholder=".io">
-      <button class="add-ext-btn" onclick="addCustomExt()">+</button>
+  <div class="layout">
+    <div class="panel">
+      <div class="panel-title">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:18px;height:18px;color:#64748b;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 12h7.5" />
+        </svg>
+        Ciblage & Paramètres
+      </div>
+      
+      <div class="form-grid">
+        <div class="field">
+          <label>Secteur d'activité cible</label>
+          <select id="targetSector">
+            <option value="btp">Bâtiment / BTP & Génie Civil</option>
+            <option value="sante">Santé / Médical / Pharma</option>
+            <option value="immo">Immobilier / Architecture</option>
+            <option value="auto">Automobile / Transport</option>
+            <option value="finance">Finance / Banque / Invest</option>
+            <option value="tech">Tech / Digital / Consulting</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Filtre Géographique (Région/Ville)</label>
+          <select id="targetRegion">
+            <option value="paris">Paris / Île-de-France</option>
+            <option value="lyon">Lyon / Auvergne-Rhône-Alpes</option>
+            <option value="marseille">Marseille / PACA</option>
+            <option value="bordeaux">Bordeaux / Nouvelle-Aquitaine</option>
+            <option value="lille">Lille / Hauts-de-France</option>
+            <option value="global">National / France Entière</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Quantité requise</label>
+          <select id="targetCount">
+            <option value="100">100 leads</option>
+            <option value="500">500 leads</option>
+            <option value="1000">1 000 leads</option>
+            <option value="3000" selected>3 000 leads</option>
+            <option value="5000">5 000 leads</option>
+            <option value="10000">10 000 leads</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Format des structures</label>
+          <select id="format">
+            <option value="prenom.nom">prenom.nom@domaine.fr</option>
+            <option value="p.nom">p.nom@domaine.fr</option>
+            <option value="nom.prenom">nom.prenom@domaine.fr</option>
+            <option value="random">Mix aléatoire complexe</option>
+          </select>
+        </div>
+
+        <div class="radar-container">
+          <div class="radar-pulse" id="radarPulse"></div>
+          <div class="radar-text" id="radarStatus">Analyseur en attente...</div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-stream" id="btnStream" onclick="startStream()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:18px;height:18px;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+            </svg>
+            Lancer le scan en direct
+          </button>
+          <button class="btn btn-stop" id="btnStop" onclick="stopStream()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:18px;height:18px;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" />
+            </svg>
+            Interrompre le scan
+          </button>
+          <button class="btn btn-gen" id="btnGen" onclick="generateBatch()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:18px;height:18px;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+            </svg>
+            Génération Instantanée (Batch)
+          </button>
+        </div>
+        <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num" id="totalCount">0</div><div class="stat-label">Découverts</div></div>
+        <div class="stat-card"><div class="stat-num" id="uniCount">0</div><div class="stat-label">Leads Uniques</div></div>
+        <div class="stat-card"><div class="stat-num" id="rateDisplay">0</div><div class="stat-label">Leads / sec</div></div>
+        <div class="stat-card"><div class="stat-num" id="timeDisplay">--</div><div class="stat-label">Vitesse traitement</div></div>
+      </div>
+
+      <div class="output-container">
+        <div class="output-header">
+          <span>CONSOLE DE RECHERCHE B2B ACTIVE</span>
+          <span id="consoleMeta">STATUS: READY</span>
+        </div>
+        <div class="output-body" id="outputBody">
+          <div class="table-wrapper" id="tableWrapper">
+            </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-action" onclick="copyAll()">📋 Copier la liste complète</button>
+        <button class="btn-action" onclick="downloadTxt()">📄 Exporter .TXT</button>
+        <button class="btn-action" onclick="downloadCSV()">📊 Tableur .CSV Enrichi</button>
+        <button class="btn-action btn-clear" onclick="clearAll()">🗑 Effacer la console</button>
+      </div>
     </div>
   </div>
-
-  <div class="field">
-    <label>Chiffres</label>
-    <select id="withNumbers">
-      <option value="sometimes">Parfois (~35%)</option>
-      <option value="never">Jamais</option>
-      <option value="always">Toujours</option>
-    </select>
-  </div>
-
-  <div class="field">
-    <label>Doublons</label>
-    <select id="dedup">
-      <option value="yes">Emails uniques uniquement</option>
-      <option value="no">Autoriser les doublons</option>
-    </select>
-  </div>
-
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-    <button class="btn btn-gen" onclick="generateBatch()">⚡ Générer tout</button>
-    <button class="btn btn-stream" onclick="startStream()">▶ En direct</button>
-    <button class="btn btn-stop" onclick="stopStream()">⏹ Stop</button>
-  </div>
 </div>
-
-<div class="stats">
-  <div class="stat"><div class="stat-num" id="totalCount">0</div><div class="stat-label">Générés</div></div>
-  <div class="stat"><div class="stat-num" id="uniCount">0</div><div class="stat-label">Uniques</div></div>
-  <div class="stat"><div class="stat-num" id="rateDisplay">0</div><div class="stat-label">/ sec (live)</div></div>
-  <div class="stat"><div class="stat-num" id="timeDisplay">0ms</div><div class="stat-label">Durée batch</div></div>
-</div>
-
-<div class="progress-bar-wrap" id="progressWrap">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-
-<div class="output" id="output"></div>
-
-<div class="actions">
-  <button class="btn btn-copy" onclick="copyAll()">📋 Copier tout</button>
-  <button class="btn btn-copy" onclick="downloadTxt()">📄 .TXT</button>
-  <button class="btn btn-copy" onclick="downloadCSV()">📊 .CSV</button>
-  <button class="btn btn-clear" onclick="clearAll()">🗑 Vider</button>
-</div>
-<div class="hint" style="margin-top:8px;">⚡ Mode batch : génère 5 000 emails en ~50ms | ▶ Mode direct : affichage en temps réel</div>
 
 <script>
-// ─── DATA ────────────────────────────────────────────────────────────────────
-const prenoms = [
-  "alice","bob","charlie","david","emma","florian","gabriel","hugo","ines","julien",
-  "kevin","laura","marie","nicolas","olivia","pierre","quentin","rachel","sophie","thomas",
-  "ugo","valerie","william","xavier","yann","zoe","adrien","beatrice","clement","diane",
-  "eric","fabrice","gael","helene","ivan","jessica","lucas","manon","noemie","olivier",
-  "pauline","remy","sarah","thibault","ursula","vincent","wendy","alicia","benoit","camille",
-  "delphine","edouard","fanny","gregoire","hannah","igor","jade","karine","lea","maxime",
-  "nadine","oscar","patricia","rodrigo","stephane","tatiana","victor","wanda","axel","baptiste",
-  "chloe","damien","elise","francois","gaelle","harold","isabelle","jerome","katia","lionel",
-  "maud","nathalie","philippe","quentin","regis","sandrine","theo","ulrike","vanessa","zacharie"
-];
+// ─── AUTHENTIFICATION CONTROLE ───────────────────────────────────────────────
+function checkAuth() {
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  const errMsg = document.getElementById('loginError');
 
-const noms = [
-  "martin","bernard","thomas","petit","robert","richard","durand","dubois","moreau","simon",
-  "laurent","lefebvre","michel","garcia","david","bertrand","roux","vincent","fournier","morel",
-  "girard","andre","lefevre","mercier","dupont","lambert","bonnet","francois","martinez","legrand",
-  "garnier","faure","rousseau","blanc","guerin","muller","henry","roussel","nicolas","perrin",
-  "morin","mathieu","clement","gauthier","fontaine","giraud","boyer","caron","chevalier","robin",
-  "masson","olivier","georges","renard","leroy","blanchard","carpentier","gilles","prevot","sauvage",
-  "barbier","lemaire","boucher","paris","adam","rey","millet","bourgeois","hubert","ferry",
-  "poirier","aubry","brochard","colin","daumas","etienne","fiquet","gonin","hardy","imbert"
-];
+  if (user === "Kazama1134" && pass === "Trillions2605") {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    renderTable();
+  } else {
+    errMsg.style.display = 'block';
+  }
+}
 
-// Pool unique : domaines FR + internationaux mélangés, tous compatibles avec n'importe quelle extension
-// (orange.fr, orange.com, sfr.fr, gmail.com, yahoo.fr... tous réels)
-const allDomains = [
-  // Français (fort taux pour réalisme FR)
-  "orange","orange","orange",
-  "sfr","sfr","sfr",
-  "wanadoo","wanadoo",
-  "free","free",
-  "laposte","laposte",
-  "bbox",
-  "numericable",
-  "neuf",
-  "club-internet",
-  "alice",
-  // Internationaux (très utilisés en France aussi)
-  "gmail","gmail","gmail","gmail",
-  "yahoo","yahoo","yahoo",
-  "hotmail","hotmail","hotmail",
-  "outlook","outlook",
-  "live","live",
-  "icloud",
-  "protonmail",
-  "aol",
-  "zoho",
-  "gmx",
-  "msn",
-  "fastmail",
-  "tutanota"
-];
+// ─── DICTIONNAIRES DE GENERATION ─────────────────────────────────────────────
+const prenoms = ["alice","adrien","benoit","bob","camille","charlie","damien","david","elise","emma","eric","fabrice","florian","gabriel","gael","helene","hugo","ines","ivan","jerome","julien","kevin","laura","lea","lucas","manon","marie","maxime","nicolas","noemie","olivier","olivia","pauline","pierre","quentin","remy","sarah","sophie","theo","thomas","thibault","victor","vincent","william","xavier","yann","zoe"];
+const noms = ["martin","bernard","thomas","petit","robert","richard","durand","dubois","moreau","simon","laurent","lefebvre","michel","garcia","david","bertrand","roux","vincent","fournier","morel","girard","andre","lefevre","mercier","dupont","lambert","bonnet","francois","martinez","legrand","garnier","faure","rousseau","blanc","guerin","muller","henry","roussel","nicolas","perrin","morin","mathieu","clement","gauthier","fontaine","giraud","boyer","caron"];
 
-const defaultExts = [".fr",".com",".net",".org",".eu",".io",".co",".info",".biz",".me"];
-let activeExts = new Set([".fr",".com",".net",".org"]);
-let allEmails = [];
-let generated = new Set();
+const sectorKeywords = {
+  btp: ["btp", "construction", "batiment", "ingenierie", "construit", "geotech", "genie-civil", "travaux"],
+  sante: ["sante", "pharma", "medical", "clinique", "biotech", "health", "care", "labo"],
+  immo: ["immo", "immobilier", "fonciere", "archi", "architecture", "patrimoine", "invest-immo", "loft"],
+  auto: ["auto", "logistique", "transport", "mecanique", "fleet", "motors", "fret", "express"],
+  finance: ["finance", "capital", "invest", "banque", "advisors", "fiduciaire", "wealth", "audit"],
+  tech: ["tech", "digital", "consulting", "software", "solutions", "cloud", "agency", "cyber"]
+};
+
+const regionKeywords = {
+  paris: ["idf", "paris", "rp", "pro-paris"],
+  lyon: ["lyon", "aura", "rhone", "pro-lyon"],
+  marseille: ["paca", "marseille", "sud", "pro-sud"],
+  bordeaux: ["aquitaine", "bdx", "gironde"],
+  lille: ["lille", "nord", "hdf"],
+  global: ["fr", "france", "b2b", "europe"]
+};
+
+// ─── VARIABLES GLOBALES ──────────────────────────────────────────────────────
+let dataLeads = []; 
+let uniqueEmails = new Set();
 let streamInterval = null;
-let rateCount = 0;
-let rateInterval = null;
+let currentIdx = 0;
 
-// ─── EXT TAGS ────────────────────────────────────────────────────────────────
-function buildExtTags() {
-  const box = document.getElementById('extBox');
-  box.innerHTML = '';
-  defaultExts.forEach(ext => {
-    const tag = document.createElement('div');
-    tag.className = 'ext-tag' + (activeExts.has(ext) ? '' : ' off');
-    tag.textContent = ext;
-    tag.onclick = () => {
-      if (activeExts.has(ext)) { activeExts.delete(ext); tag.classList.add('off'); }
-      else { activeExts.add(ext); tag.classList.remove('off'); }
-    };
-    box.appendChild(tag);
-  });
-}
-buildExtTags();
-
-function addCustomExt() {
-  let val = document.getElementById('customExt').value.trim();
-  if (!val) return;
-  if (!val.startsWith('.')) val = '.' + val;
-  if (!defaultExts.includes(val)) { defaultExts.push(val); activeExts.add(val); buildExtTags(); }
-  document.getElementById('customExt').value = '';
-}
-
-document.getElementById('targetCount').addEventListener('change', function() {
-  document.getElementById('customField').style.display = this.value === 'custom' ? 'flex' : 'none';
-});
-
-// ─── CORE GENERATOR ──────────────────────────────────────────────────────────
 function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function randNum(max) { return Math.floor(Math.random() * max) + 1; }
 
-function getTargetQty() {
-  const sel = document.getElementById('targetCount').value;
-  return sel === 'custom' ? (parseInt(document.getElementById('customCount').value) || 5000) : parseInt(sel);
-}
+// ─── GENERATEUR LOGIQUE ENRICHIE ─────────────────────────────────────────────
+function generateSingleLead() {
+  const p = rand(prenoms);
+  const n = rand(noms);
+  const sect = document.getElementById('targetSector').value;
+  const reg = document.getElementById('targetRegion').value;
 
-function buildLocal(format, p, n) {
-  let fmt = format;
-  if (fmt === 'random') fmt = rand(['prenom.nom','prenomnom','p.nom','nom.prenom','prenom_nom','prenom']);
-  switch(fmt) {
-    case 'prenom.nom':  return `${p}.${n}`;
-    case 'prenomnom':   return `${p}${n}`;
-    case 'p.nom':       return `${p[0]}.${n}`;
-    case 'nom.prenom':  return `${n}.${p}`;
-    case 'prenom_nom':  return `${p}_${n}`;
-    case 'prenom':      return p;
-    default:            return `${p}.${n}`;
-  }
-}
+  const kwSect = rand(sectorKeywords[sect]);
+  const kwReg = rand(regionKeywords[reg]);
+  const ext = rand([".fr", ".com", ".net"]);
 
-function buildEmail() {
-  const exts   = [...activeExts];
-  if (!exts.length) return null;
-  const withNum = document.getElementById('withNumbers').value;
-  const format  = document.getElementById('format').value;
+  const domain = Math.random() > 0.4 ? `${kwReg}-${kwSect}` : `${kwSect}-${kwReg}`;
 
-  const p   = rand(prenoms);
-  const n   = rand(noms);
-  const ext = rand(exts);
-
-  const d = rand(allDomains);
-
-  let local = buildLocal(format, p, n);
-
-  if (withNum === 'always') local += randNum(9999);
-  else if (withNum === 'sometimes' && Math.random() < 0.35) local += randNum(999);
-
-  return `${local}@${d}${ext}`;
-}
-
-// ─── BATCH (ultra-rapide, pas d'affichage ligne par ligne) ────────────────────
-function generateBatch() {
-  const qty    = getTargetQty();
-  const dedup  = document.getElementById('dedup').value === 'yes';
-  const exts   = [...activeExts];
-  if (!exts.length) { alert('Sélectionne au moins une extension.'); return; }
-
-  const progressWrap = document.getElementById('progressWrap');
-  const progressBar  = document.getElementById('progressBar');
-  progressWrap.style.display = 'block';
-  progressBar.style.width = '0%';
-
-  const t0 = performance.now();
-  const batch = [];
-  let attempts = 0;
-  const maxAttempts = qty * 3;
-
-  while (batch.length < qty && attempts < maxAttempts) {
-    attempts++;
-    const email = buildEmail();
-    if (!email) break;
-    if (dedup && generated.has(email)) continue;
-    batch.push(email);
-    if (dedup) generated.add(email);
-    else generated.add(email);
+  const fmt = document.getElementById('format').value;
+  let local = `${p}.${n}`;
+  if (fmt === 'p.nom') local = `${p[0]}.${n}`;
+  if (fmt === 'nom.prenom') local = `${n}.${p}`;
+  if (fmt === 'random') {
+    const r = Math.random();
+    if (r < 0.3) local = `${p[0]}_${n}`;
+    else if (r < 0.6) local = `${p}${n}`;
+    else if (r < 0.8) local = `${p}.${n}${Math.floor(Math.random()*99)}`;
   }
 
-  allEmails = allEmails.concat(batch);
-  const elapsed = Math.round(performance.now() - t0);
+  const email = `${local}@${domain}${ext}`;
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
 
-  // Render (affiche les 500 derniers dans le DOM, tout est en mémoire)
-  const out = document.getElementById('output');
-  out.innerHTML = '';
-  const fragment = document.createDocumentFragment();
-  const startIdx = Math.max(0, allEmails.length - 500);
-  for (let i = startIdx; i < allEmails.length; i++) {
-    const line = document.createElement('div');
-    line.className = 'email-line';
-    line.innerHTML = `<span>#${i+1}</span>${allEmails[i]}`;
-    fragment.appendChild(line);
-  }
-  out.appendChild(fragment);
-  out.scrollTop = out.scrollHeight;
+  const sectorLabel = document.getElementById('targetSector').options[document.getElementById('targetSector').selectedIndex].text.split(' ')[0];
+  const regionLabel = document.getElementById('targetRegion').options[document.getElementById('targetRegion').selectedIndex].text.split(' ')[0];
 
-  progressBar.style.width = '100%';
-  setTimeout(() => { progressWrap.style.display = 'none'; }, 800);
-
-  document.getElementById('totalCount').textContent = allEmails.length.toLocaleString('fr');
-  document.getElementById('uniCount').textContent   = generated.size.toLocaleString('fr');
-  document.getElementById('timeDisplay').textContent = elapsed < 1000 ? `${elapsed}ms` : `${(elapsed/1000).toFixed(1)}s`;
+  return {
+    email: email,
+    sector: sectorLabel,
+    region: regionLabel,
+    time: timeStr
+  };
 }
 
-// ─── STREAM (affichage live) ──────────────────────────────────────────────────
+// ─── DESSINER LE TABLEAU (Rendu Partiel pour éviter les plantages) ───────────
+function renderTable() {
+  const wrapper = document.getElementById('tableWrapper');
+  
+  let html = `
+    <div class="table-row header-row">
+      <div class="col-idx">Id</div>
+      <div>Secteur</div>
+      <div>Région</div>
+      <div>Adresse E-mail Découverte</div>
+      <div class="col-status">État</div>
+    </div>
+  `;
+
+  // On limite l'affichage visuel aux 200 derniers éléments pour préserver le téléphone
+  const maxVisible = 200;
+  const startIndex = Math.max(0, dataLeads.length - maxVisible);
+  const visibleLeads = dataLeads.slice(startIndex);
+
+  visibleLeads.forEach(lead => {
+    html += `
+      <div class="table-row">
+        <div class="col-idx">#${lead.idx}</div>
+        <div class="col-tag">${lead.sector}</div>
+        <div class="col-tag">${lead.region}</div>
+        <div class="col-email">${lead.email}</div>
+        <div class="col-status" style="color: ${streamInterval ? '#22c55e' : '#38bdf8'}">✓ OK</div>
+      </div>
+    `;
+  });
+
+  if (dataLeads.length > maxVisible) {
+    html += `<div class="view-hint">... Affichage optimisé : seuls les ${maxVisible} derniers leads sont visibles à l'écran, mais les ${dataLeads.length} générés sont enregistrés en mémoire et prêts à être copiés/exportés.</div>`;
+  }
+
+  wrapper.innerHTML = html;
+  const body = document.getElementById('outputBody');
+  body.scrollTop = body.scrollHeight;
+}
+
+// ─── MODE SCAN EN DIRECT (RALENTI À 2 SECONDES) ──────────────────────────────
 function startStream() {
   if (streamInterval) return;
-  const exts = [...activeExts];
-  if (!exts.length) { alert('Sélectionne au moins une extension.'); return; }
 
-  rateInterval = setInterval(() => {
-    document.getElementById('rateDisplay').textContent = rateCount.toLocaleString('fr');
-    rateCount = 0;
-  }, 1000);
+  document.getElementById('radarPulse').classList.add('active');
+  document.getElementById('radarStatus').textContent = "Recherche de structures actives...";
+  document.getElementById('consoleMeta').textContent = "STATUS: SCANNING";
+  document.getElementById('btnStream').style.display = 'none';
+  document.getElementById('btnStop').style.display = 'block';
+  document.getElementById('btnGen').disabled = true;
 
-  const out = document.getElementById('output');
-  const dedup = document.getElementById('dedup').value === 'yes';
-  const BATCH_PER_TICK = 5; // emails par tick (60fps-ish)
+  document.getElementById('rateDisplay').textContent = "0.5";
+  document.getElementById('timeDisplay').textContent = "En direct";
 
   streamInterval = setInterval(() => {
-    const fragment = document.createDocumentFragment();
-    for (let i = 0; i < BATCH_PER_TICK; i++) {
-      const email = buildEmail();
-      if (!email) continue;
-      if (dedup && generated.has(email)) continue;
-      allEmails.push(email);
-      generated.add(email);
-      rateCount++;
-      const line = document.createElement('div');
-      line.className = 'email-line';
-      line.innerHTML = `<span>#${allEmails.length}</span>${email}`;
-      fragment.appendChild(line);
+    let lead = generateSingleLead();
+    while (uniqueEmails.has(lead.email)) {
+      lead = generateSingleLead(); 
     }
-    out.appendChild(fragment);
-    out.scrollTop = out.scrollHeight;
-    while (out.children.length > 500) out.removeChild(out.firstChild);
 
-    document.getElementById('totalCount').textContent = allEmails.length.toLocaleString('fr');
-    document.getElementById('uniCount').textContent   = generated.size.toLocaleString('fr');
-  }, 16); // ~60 fps → ~300/sec
+    currentIdx++;
+    uniqueEmails.add(lead.email);
+    dataLeads.push({idx: currentIdx, ...lead});
+
+    renderTable();
+
+    document.getElementById('totalCount').textContent = dataLeads.length;
+    document.getElementById('uniCount').textContent = uniqueEmails.size;
+  }, 2000); 
 }
 
 function stopStream() {
   clearInterval(streamInterval);
-  clearInterval(rateInterval);
   streamInterval = null;
-  rateInterval   = null;
-  document.getElementById('rateDisplay').textContent = '0';
+  document.getElementById('radarPulse').classList.remove('active');
+  document.getElementById('radarStatus').textContent = "Scan suspendu.";
+  document.getElementById('consoleMeta').textContent = "STATUS: PAUSED";
+  document.getElementById('btnStream').style.display = 'block';
+  document.getElementById('btnStop').style.display = 'none';
+  document.getElementById('btnGen').disabled = false;
+  document.getElementById('rateDisplay').textContent = "0";
 }
 
-// ─── EXPORT ───────────────────────────────────────────────────────────────────
+// ─── MODE BATCH INSTANTANÉ ──────────────────────────────────────────────────
+function generateBatch() {
+  const qty = parseInt(document.getElementById('targetCount').value) || 100;
+  const progressWrap = document.getElementById('progressWrap');
+  const progressBar = document.getElementById('progressBar');
+  
+  progressWrap.style.display = 'block';
+  progressBar.style.width = '0%';
+  
+  const t0 = performance.now();
+
+  for (let i = 0; i < qty; i++) {
+    currentIdx++;
+    const lead = generateSingleLead();
+    uniqueEmails.add(lead.email);
+    dataLeads.push({idx: currentIdx, ...lead});
+  }
+
+  renderTable();
+  
+  const elapsed = Math.round(performance.now() - t0);
+  
+  progressBar.style.width = '100%';
+  setTimeout(() => { progressWrap.style.display = 'none'; }, 600);
+
+  document.getElementById('totalCount').textContent = dataLeads.length.toLocaleString('fr-FR');
+  document.getElementById('uniCount').textContent = uniqueEmails.size.toLocaleString('fr-FR');
+  document.getElementById('rateDisplay').textContent = Math.round(qty / (elapsed / 1000 || 1)).toLocaleString('fr-FR');
+  document.getElementById('timeDisplay').textContent = `${elapsed}ms`;
+}
+
+// ─── EXPORTS COMPLETS DE TOUTE LA MÉMOIRE ───────────────────────────────────
 function copyAll() {
-  if (!allEmails.length) return;
-  navigator.clipboard.writeText(allEmails.join('\n'))
-    .then(() => alert(`✅ ${allEmails.length.toLocaleString('fr')} emails copiés !`));
+  if (!dataLeads.length) {
+    alert("Aucun e-mail à copier.");
+    return;
+  }
+  const text = dataLeads.map(l => l.email).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    alert(`\u2705 Succès : ${dataLeads.length.toLocaleString('fr-FR')} e-mails ont été copiés dans votre presse-papiers !`);
+  });
 }
 
 function downloadTxt() {
-  if (!allEmails.length) return;
-  const blob = new Blob([allEmails.join('\n')], { type: 'text/plain' });
-  dl(blob, 'emails_test.txt');
+  if (!dataLeads.length) return;
+  const text = dataLeads.map(l => l.email).join('\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  triggerDl(blob, 'emails_prospection.txt');
 }
 
 function downloadCSV() {
-  if (!allEmails.length) return;
-  const blob = new Blob(['email\n' + allEmails.join('\n')], { type: 'text/csv' });
-  dl(blob, 'emails_test.csv');
+  if (!dataLeads.length) return;
+  let csvContent = "\uFEFFIndex;Email;Secteur d'activite;Region cible;Heure de decouverte\n";
+  dataLeads.forEach(l => {
+    csvContent += `${l.idx};${l.email};${l.sector};${l.region};${l.time}\n`;
+  });
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  triggerDl(blob, 'leads_b2b_enrichis.csv');
 }
 
-function dl(blob, name) {
+function triggerDl(blob, name) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = name;
@@ -516,12 +484,17 @@ function dl(blob, name) {
 
 function clearAll() {
   stopStream();
-  allEmails = [];
-  generated = new Set();
-  document.getElementById('output').innerHTML = '';
-  ['totalCount','uniCount','rateDisplay'].forEach(id => document.getElementById(id).textContent = '0');
-  document.getElementById('timeDisplay').textContent = '0ms';
+  dataLeads = [];
+  uniqueEmails = new Set();
+  currentIdx = 0;
+  renderTable();
+  document.getElementById('totalCount').textContent = '0';
+  document.getElementById('uniCount').textContent = '0';
+  document.getElementById('rateDisplay').textContent = '0';
+  document.getElementById('timeDisplay').textContent = '--';
+  document.getElementById('consoleMeta').textContent = "STATUS: RESET";
 }
 </script>
 </body>
 </html>
+
