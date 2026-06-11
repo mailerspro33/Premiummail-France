@@ -1,1 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracteur d'Emails B2B France</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border-top-color: #3b82f6;
+            animation: spinner 1.5s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+                Extracteur d'Emails B2B France
+            </h1>
+            <p class="text-lg text-gray-600">
+                Générez des listes de prospects qualifiées avec vos accès LWS.
+            </p>
+        </header>
+
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <form id="searchForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div>
+                    <label for="sector" class="block text-sm font-semibold text-gray-700 mb-1">Secteur d'activité</label>
+                    <select id="sector" class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="btp" selected>BTP / Construction</option>
+                        <option value="restauration">Restauration / Cafés</option>
+                        <option value="sante">Santé / Médical</option>
+                        <option value="auto">Automobile / Garage</option>
+                        <option value="immobilier">Immobilier</option>
+                        <option value="transport">Transport / Logistique</option>
+                        <option value="informatique">Informatique / Tech</option>
+                        <option value="commerce">Commerce de détail</option>
+                        <option value="industrie">Industrie</option>
+                        <option value="agriculture">Agriculture</option>
+                        <option value="education">Éducation / Formation</option>
+                        <option value="finance">Finance / Assurance</option>
+                        <option value="communication">Communication / Marketing</option>
+                        <option value="nettoyage">Nettoyage / Entretien</option>
+                        <option value="securite">Sécurité</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="city" class="block text-sm font-semibold text-gray-700 mb-1">Ville, CP ou Dept</label>
+                    <input type="text" id="city" value="Paris" placeholder="Ex: 29100, Rennes, 75" required
+                           class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="limit" class="block text-sm font-semibold text-gray-700 mb-1">Limite de résultats</label>
+                    <select id="limit" class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="2">2 prospects</option>
+                        <option value="4">4 prospects</option>
+                        <option value="6" selected>6 prospects</option>
+                        <option value="8">8 prospects</option>
+                        <option value="10">10 prospects</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" id="submitBtn"
+                            class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors cursor-pointer">
+                        Lancer la recherche
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-4 flex flex-wrap gap-6 text-sm text-gray-600 border-t border-gray-100 pt-4">
+                <label class="flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="emailsOnly" checked class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 mr-2">
+                    Masquer les entreprises sans e-mail public
+                </label>
+                <label class="flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="useCache" checked class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 mr-2">
+                    Activer le cache serveur (Plus rapide)
+                </label>
+            </div>
+        </div>
+
+        <div id="statusZone" class="hidden text-center p-6 bg-white rounded-xl shadow-sm mb-8">
+            <div id="loaderIcon" class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mx-auto mb-4"></div>
+            <p id="statusMessage" class="text-gray-700 font-medium">Connexion sécurisée établie. Extraction en cours...</p>
+        </div>
+
+        <div id="statsZone" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-center">
+                <span class="block text-2xl font-bold text-blue-700" id="statApi">0</span>
+                <span class="text-xs text-blue-600 font-medium uppercase tracking-wider">Trouvées (INSEE)</span>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 text-center">
+                <span class="block text-2xl font-bold text-purple-700" id="statDdg">0</span>
+                <span class="text-xs text-purple-600 font-medium uppercase tracking-wider">Sites résolus (DDG)</span>
+            </div>
+            <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 text-center">
+                <span class="block text-2xl font-bold text-amber-700" id="statScraped">0</span>
+                <span class="text-xs text-amber-600 font-medium uppercase tracking-wider">Sites Scrapés</span>
+            </div>
+            <div class="bg-green-50 p-4 rounded-xl border border-green-100 text-center">
+                <span class="block text-2xl font-bold text-green-700" id="statEmails">0</span>
+                <span class="text-xs text-green-600 font-medium uppercase tracking-wider font-bold">Avec E-mails</span>
+            </div>
+        </div>
+
+        <div id="resultsZone" class="hidden bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h2 class="text-lg font-bold text-gray-900">Prospects Récoltés</h2>
+                <span id="execTime" class="text-xs text-gray-500 font-mono">Temps d'exécution : 0s</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Entreprise / SIREN</th>
+                            <th scope="col" class="px-6 py-3">Localisation</th>
+                            <th scope="col" class="px-6 py-3">Site Internet</th>
+                            <th scope="col" class="px-6 py-3 text-blue-700 font-bold">E-mails trouvés</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Adresse racine de ton scraper LWS
+        const API_URL = "https://burel28120500.webdb2241.lwspanel.com/scrape.php";
+
+        document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const statusZone = document.getElementById('statusZone');
+            const statusMessage = document.getElementById('statusMessage');
+            const loaderIcon = document.getElementById('loaderIcon');
+            const statsZone = document.getElementById('statsZone');
+            const resultsZone = document.getElementById('resultsZone');
+            const tableBody = document.getElementById('resultsTableBody');
+
+            // Extraction des inputs
+            const sector = document.getElementById('sector').value;
+            const city = document.getElementById('city').value;
+            const limit = document.getElementById('limit').value;
+            const emailsOnly = document.getElementById('emailsOnly').checked ? '1' : '0';
+            const useCache = document.getElementById('useCache').checked ? '1' : '0';
+
+            // Affichage loader
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            statusZone.classList.remove('hidden');
+            loaderIcon.classList.remove('hidden');
+            statusMessage.innerText = "Lancement de la recherche sécurisée... Récupération des données INSEE et DuckDuckGo en cours.";
+            
+            statsZone.classList.add('hidden');
+            resultsZone.classList.add('hidden');
+            tableBody.innerHTML = '';
+
+            // Paramètres d'URL
+            const targetUrl = `${API_URL}?sector=${encodeURIComponent(sector)}&city=${encodeURIComponent(city)}&limit=${limit}&emails_only=${emailsOnly}&cache=${useCache}`;
+
+            try {
+                const response = await fetch(targetUrl);
+                if (!response.ok) throw new Error(`Erreur serveur : ${response.status}`);
+                
+                const data = await response.json();
+
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                loaderIcon.classList.add('hidden');
+
+                if (data.status === 'api_error' || !data.companies || data.companies.length === 0) {
+                    statusMessage.innerHTML = `<span class="text-red-600 font-bold">⚠️ ${data.message || 'Aucune donnée retournée.'}</span>`;
+                    return;
+                }
+
+                statusMessage.innerHTML = `<span class="text-green-600 font-bold">🎉 Données synchronisées !</span> ${data.message}`;
+
+                // Remplissage des stats
+                document.getElementById('statApi').innerText = data.stats.companies_from_api || 0;
+                document.getElementById('statDdg').innerText = data.stats.sites_resolved_by_ddg || 0;
+                document.getElementById('statScraped').innerText = data.stats.companies_scraped || 0;
+                document.getElementById('statEmails').innerText = data.stats.companies_with_emails || 0;
+                document.getElementById('execTime').innerText = `Temps d'exécution : ${data.stats.exec_time_sec || 0}s`;
+                statsZone.classList.remove('hidden');
+
+                // Remplissage du tableau
+                data.companies.forEach(company => {
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-100 hover:bg-gray-50 transition-colors";
+
+                    const webBadge = company.resolved ? `<span class="ml-1 text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full font-bold">DDG</span>` : '';
+                    const siteLink = company.site_web 
+                        ? `<a href="${company.site_web}" target="_blank" class="text-blue-600 hover:underline inline-flex items-center font-medium">${company.site_web.replace(/^https?:\/\//i, '')} ${webBadge}</a>`
+                        : `<span class="text-gray-400 italic text-xs">Non trouvé</span>`;
+
+                    let emailsDisplay = `<span class="text-gray-400 italic text-xs">Aucun e-mail public détecté</span>`;
+                    if (company.emails && company.emails.length > 0) {
+                        emailsDisplay = company.emails.map(email => 
+                            `<span class="block text-blue-700 font-bold bg-blue-50 border border-blue-100 px-2 py-1 rounded md:inline-block mr-1 mb-1 font-mono text-xs select-all">${email}</span>`
+                        ).join('');
+                    }
+
+                    tr.innerHTML = `
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-gray-900">${company.nom}</div>
+                            <div class="text-xs text-gray-400 font-mono mt-0.5">SIREN : ${company.siren || 'N/A'}</div>
+                        </td>
+                        <td class="px-6 py-4 text-xs text-gray-600 max-w-xs truncate" title="${company.adresse}">
+                            ${company.adresse || 'N/A'}
+                        </td>
+                        <td class="px-6 py-4">${siteLink}</td>
+                        <td class="px-6 py-4">${emailsDisplay}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+                resultsZone.classList.remove('hidden');
+
+            } catch (error) {
+                console.error(error);
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                loaderIcon.classList.add('hidden');
+                statusMessage.innerHTML = `<span class="text-red-600 font-bold">❌ Erreur d'accès sécurisé :</span> Impossible de joindre le script LWS. L'authentification a échoué ou les permissions d'accès sont insuffisantes.`;
+            }
+        });
+    </script>
+</body>
+</html>
 
